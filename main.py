@@ -69,9 +69,12 @@ def create_model(resnet):
         h = resnet.residual_block(h, filter=[3, 3], channel=[128, 128])
 
     with tf.variable_scope('global_average_pooling'):
-        gap_filter = resnet.create_variable('filter', shape=(4, 4, 128, 10))
+        print('xxxxxxxxxxxxx', h)
+        gap_filter = resnet.create_variable('filter', shape=(1, 1, 128, 10))
         h = tf.nn.conv2d(h, filter=gap_filter, strides=[1, 1, 1, 1], padding='SAME')
-        h = tf.nn.avg_pool(h, ksize=[1, 4, 4, 256], strides=[1, 1, 1, 1], padding='VALID')
+        print('before global avg:', h)
+        h = tf.nn.avg_pool(h, ksize=[1, 4, 4, 1], strides=[1, 1, 1, 1], padding='VALID')
+        print(h)
         h = tf.reduce_mean(h, axis=[1, 2])
         resnet.layers.append(h)
     return h
